@@ -1,0 +1,644 @@
+<!doctype html>
+<html>
+<head>
+  <style>body{font-family:verdana;padding-left:15%;padding-right:15%;}h3{text-align:center;}</style>
+</head>
+<body>
+<h3>CS 194-26 Project 2: Fun with Filters and Frequencies!</h3>
+<h5 style="text-align:center">Xidong Wu</h5>
+<h4>Part 1: Fun with Filters</h4>
+<p>In this part, I will work on 2D convolutions and filtering.</p>
+<h5>1.1: Finite Difference Operator</h5>
+
+<p> In this part, the partial derivative in x and y of the cameraman image is presented. The image is convolved with finite difference operators. Filters are D_x=[1 -1] and D_y=[1 -1]^T. Results are shown below.</p>
+
+<div align="center">
+	<table style="width=100%">
+		<tr>
+			<td align="middle">
+            <img src="part1/cameraman.png" width="300px" />
+            <figcaption align="middle">Original image</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/cameraman_x.jpg" width="300px" />
+            <figcaption align="middle">D_x</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/cameraman_y.jpg" width="300px" />
+            <figcaption align="middle">D_y</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+<p>The gradient magnitude of final image is calculated by using sqrt(D_x^2+D_y^2). In order to get edge image, threshold needs to be set to binarize gradient magnitude image. The range of image is [0,255] and 60 is set as threshold to reduce noise do but not effect edges.</p>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+            <td align="middle">
+            <img src="part1/x_y.jpg" width="300px" />
+            <figcaption align="middle">Gradient magnitude and edge</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/binarized.jpg" width="300px" />
+            <figcaption align="middle">Binarized gradient magnitude and edge</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+<h5>1.2: Derivative of Gaussian (DoG) Filter</h5>
+<p>It is noticed that the above resutls were noisy. So, the smoothing operator, the Gaussian filter G is introduced. The Gaussian kernel is defiend with sigma = 1 and length =2*3 + 1 = 7. After manually adjustment, the threshold is set with 49 and it shows a improvement compared with the results in part 1.1</p>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+            <td align="middle">
+            <img src="part1/smoothed.jpg" width="300px" />
+            <figcaption align="middle">Smoothed Original image</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/D_x.jpg" width="300px" />
+            <figcaption align="middle">D_x</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/D_y.jpg" width="300px" />
+            <figcaption align="middle">D_y</figcaption>
+            <br>
+
+        </tr>
+    </table>
+</div>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+            <td align="middle">
+            <img src="part1/gradient.jpg" width="300px" />
+            <figcaption align="middle">Gradient magnitude and edge</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/b_gradient.jpg" width="300px" />
+            <figcaption align="middle">Binarized gradient magnitude and edge</figcaption>
+            <br>
+
+        </tr>
+    </table>
+</div>
+<p>Because of the commutative and associative rule of the convolution, if I convolve the gaussian with D_x and D_y first and then convolve with the original image, I would get the same result as before (see below).</p>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+            <td align="middle">
+            <img src="part1/dif_order.jpg" width="300px" />
+            <figcaption align="middle">gradient magnitude and edge with DoG filters</figcaption>
+            <br>
+
+        </tr>
+    </table>
+</div>
+<h5>1.3: Image Straightening</h5>
+<p> In this part, the images are rotated the automatically to straighten it. In order to avoid the effect of edges of the image created by rotation, the rotated images are cropped. </i></p>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+            <td align="middle">
+            <img src="part1/facade.jpg" width="300px" />
+            <figcaption align="middle">Original image</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/1_rotate.jpg" width="300px" />
+            <figcaption align="middle">Result image</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/1_ori_hist.jpg" width="300px" />
+            <figcaption align="middle">Original_histogram</figcaption>
+            <br>
+
+            <td align="middle">
+            <img src="part1/1_rot_hist.jpg" width="300px" />
+            <figcaption align="middle">Result_histogram</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+<p>From the above results, I found that the histogram of rotated image is more balanced. Then I tried the three more images. I realized that if the main edge in the image is not srtraight, the rotation matching effect would be bad.</p>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+            <td align="middle">
+            <img src="part1/shelf_ori.png" width = "200px" />
+            <figcaption align="middle">Ice_org</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/2_rotate.jpg" width ="200px" />
+            <figcaption align="middle">Ice_result</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/2_ori_hist.jpg" width="300px" />
+            <figcaption align="middle">his_org</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/2_rot_hist.jpg" width="300px" />
+            <figcaption align="middle">his_result</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+            <td align="middle">
+            <img src="part1/bulding.png" width="200px" />
+            <figcaption align="middle">Build_org</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/3_rotate.jpg" width="200px" />
+            <figcaption align="middle">Build_result</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/3_ori_hist.jpg" width="300px" />
+            <figcaption align="middle">his_org</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/3_rot_hist.jpg" width="300px" />
+            <figcaption align="middle">his_result</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+            <td align="middle">
+            <img src="part1/architecture.png" width="300px" />
+            <figcaption align="middle">Architecture_org</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/4_rotate.jpg" width="300px" />
+            <figcaption align="middle">Architecture_result (Failed)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/4_ori_hist.jpg" width="300px" />
+            <figcaption align="middle">his_org</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part1/4_rot_hist.jpg" width="300px" />
+            <figcaption align="middle">his_result</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+<h4>Part 2: Fun with Frequencies!</h4>
+<h5>2.1: Image "Sharpening"</h5>
+
+<p> Gaussian filter is a low pass filter that retains only the low frequencies. The high frequency compoment of images can be got when we subtract the blurred version from the original image. Stronger high frequencies makes a image more sharper. Because the range of alpha is usually [0,1]. I tried weight alpha = 0.2, 0.5 and 1.0. As weight increases and more high frequency components are added to the image, sharping effect is more obvious.</p>
+
+
+<div align="center">
+	<table style="width=100%">
+		<tr>
+            <td align="middle">
+            <img src="part2/taj.jpg" width="300px" />
+            <figcaption align="middle">Org</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/taj02.jpg" width="300px" />
+            <figcaption align="middle">Alpha=0.2</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/taj05.jpg" width="300px" />
+            <figcaption align="middle">Alpha=0.5</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/taj10.jpg" width="300px" />
+            <figcaption align="middle">Alpha=1.0</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+            <td align="middle">
+            <img src="part2/minn.jpg" width="300px" />
+            <figcaption align="middle">Org</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/minn02.jpg" width="300px" />
+            <figcaption align="middle">Alpha=0.2</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/minn05.jpg" width="300px" />
+            <figcaption align="middle">Alpha=0.5</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/minn10.jpg" width="300px" />
+            <figcaption align="middle">Alpha=1.0</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+            <td align="middle">
+            <img src="part2/cebuilding.jpg" width="300px" />
+            <figcaption align="middle">Org</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/cebuilding02.jpg" width="300px" />
+            <figcaption align="middle">Alpha=0.2</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/cebuilding05.jpg" width="300px" />
+            <figcaption align="middle">Alpha=0.5</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/cebuilding10.jpg" width="300px" />
+            <figcaption align="middle">Alpha=1.0</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+
+
+<p>Finally, I choose a sharp image of beach. Then I used gaussian filter to blur it. Then, I followed the previous process to shapr the blurred image. From the result, I found that after sharpening, the image has better contrast but it cannot be the same as the original image becaue the highest frequecy of image has been lost. </p>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+			<td align="middle">
+            <img src="part2/beach.jpg" width="300px" />
+            <figcaption align="middle">Org_sharp</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/2_1smoothed.jpg" width="300px" />
+            <figcaption align="middle">Blur</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/2_1smoothed10.jpg" width="300px" />
+            <figcaption align="middle">Alpha=1.0</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/2_1smoothed50.jpg" width="300px" />
+            <figcaption align="middle">Alpha=2.0</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+
+
+<div align="center">
+    <table style="width=100%">
+        <tr>
+            <td align="middle">
+            <img src="part2/beihangold.jpg" width="300px" />
+            <figcaption align="middle">Org_sharp</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/beihangold_smoothed.jpg" width="300px" />
+            <figcaption align="middle">Blur</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/beihangold_smoothed10.jpg" width="300px" />
+            <figcaption align="middle">Alpha=1.0</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/beihangold_smoothed20.jpg" width="300px" />
+            <figcaption align="middle">Alpha=2.0</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+
+
+<h5>2.2: Hybrid Images</h5>
+<p> This part creates hybrid images using the approach described in the SIGGRAPH 2006 [1]. 
+
+
+Low-pass filter used is Gaussian filter, and high-pass filter is impulse filter minus the Gaussian filter. Convolution in the original domain equals to multiplication in the frequency domain. So i convert low and high-pass filter to the frequency domain to process the image. After getting low and high frequency part of images, I just add them together to get the final hybrid image. Log magnitude plot of the Fourier transform of images are shown below. (Image alignment and cropping is done in the whole process)</p>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+			<td align="middle">
+            <img src="part2/hybrid/DerekPicture.jpg" width="300px" />
+            <figcaption align="middle">DerekPicture</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/hybrid/nutmeg.jpg" width="300px" />
+            <figcaption align="middle">Nutmeg</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/hybrid/hybrid_.jpg" width="300px" />
+            <figcaption align="middle">Hybrid</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+
+
+<p>These days, Disney movie Mulan 2020 is released and I also mulan in the carton 1998 and actress, Liu Yifei (Mulan in the movie) as following. In addition, I also tried the Albert Einstein and Marilyn Monroe. is my favorite result, and I also illustrate the process through frequency analysis. </p>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+			<td align="middle">
+            <img src="part2/hybrid/mulan.jpg" width="300px" />
+            <figcaption align="middle">Mulan </figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/hybrid/liuyifei.jpg" width="300px" />
+            <figcaption align="middle">Liu Yifei</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/hybrid/hybrid_Mulan.jpg" width="300px" />
+            <figcaption align="middle">Hybrid2</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+			<td align="middle">
+            <img src="part2/hybrid/Einstein.jpg" width="300px" />
+            <figcaption align="middle">Albert Einstein</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/hybrid/Monroe.jpg" width="300px" />
+            <figcaption align="middle">Marilyn Monroe</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/hybrid/hybrid_Einstein_Marilyn.jpg" width="300px" />
+            <figcaption align="middle">Hybrid3</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+
+<div align="center">
+    <table style="width=100%">
+        <tr>
+            <td align="middle">
+            <img src="part2/hybrid/1.jpg" width="250px" />
+            <figcaption align="middle">Albert Einstein fourier</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/hybrid/2.jpg" width="250px" />
+            <figcaption align="middle">Marilyn Monroe fourier</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/hybrid/3.jpg" width="250px" />
+            <figcaption align="middle">low_fourier</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/hybrid/4.jpg" width="250px" />
+            <figcaption align="middle">high_fourier</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/hybrid/5.jpg" width="250px" />
+            <figcaption align="middle">Hybrid_fourier</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+
+<h5>2.3: Gaussian and Laplacian Stacks</h5>
+<p>In this part, I build the Guassian and Laplacian stacks. Stack is different from pyramid without the downsampling. Gaussian and Laplacian stack are similar.</p>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+			<td align="middle">
+            <img src="part2/blending/lincoln.jpg" width="300px" />
+            <figcaption align="middle">Lincoln</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+			<td align="middle">
+            <img src="part2/blending/Gaussian_Stack_1.jpg" width="220px" />
+            <figcaption align="middle">Gaussian stack (L1)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/Gaussian_Stack_2.jpg" width="220px" />
+            <figcaption align="middle">Gaussian stack (L2)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/Gaussian_Stack_3.jpg" width="220px" />
+            <figcaption align="middle">Gaussian stack (L3)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/Gaussian_Stack_4.jpg" width="220px" />
+            <figcaption align="middle">Gaussian stack (L4)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/Gaussian_Stack_5.jpg" width="220px" />
+            <figcaption align="middle">Gaussian stack (L5)</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+            <td align="middle">
+            <img src="part2/blending/Lap_Stack_1.jpg" width="220px" />
+            <figcaption align="middle">Laplacian stack (L1)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/Lap_Stack_2.jpg" width="220px" />
+            <figcaption align="middle">Laplacian stack (L2)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/Lap_Stack_3.jpg" width="220px" />
+            <figcaption align="middle">Laplacian stack (L3)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/Lap_Stack_4.jpg" width="220px" />
+            <figcaption align="middle">Laplacian stack (L4)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/Lap_Stack_5.jpg" width="220px" />
+            <figcaption align="middle">Laplacian stack (L5)</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+<p>Then i applied Gaussian and Laplacian stack to the part 2.2's result, hybrid of Einstein and Marilyn. Recall that in the part 2.2, I used Einstein's low frequency part and Marilyn's high frequency part to get the hybrid image. Therefore, we could see that Einstein becomes more apparent in the Gaussian stack and Marilyn becomes obvious in the Laplacian stack.</p>
+<div align="center">
+    <table style="width=100%">
+        <tr>
+            <td align="middle">
+            <img src="part2/blending/self/Gaussian_Stack_1.jpg" width="220px" />
+            <figcaption align="middle">Gaussian stack (L1)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/self/Gaussian_Stack_2.jpg" width="220px" />
+            <figcaption align="middle">Gaussian stack (L2)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/self/Gaussian_Stack_3.jpg" width="220px" />
+            <figcaption align="middle">Gaussian stack (L3)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/self/Gaussian_Stack_4.jpg" width="220px" />
+            <figcaption align="middle">Gaussian stack (L4)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/self/Gaussian_Stack_5.jpg" width="220px" />
+            <figcaption align="middle">Gaussian stack (L5)</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+<div align="center">
+    <table style="width=100%">
+        <tr>
+            <td align="middle">
+            <img src="part2/blending/self/Lap_Stack_1.jpg" width="220px" />
+            <figcaption align="middle">Laplacian stack (L1)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/self/Lap_Stack_2.jpg" width="220px" />
+            <figcaption align="middle">Laplacian stack (L2)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/self/Lap_Stack_3.jpg" width="220px" />
+            <figcaption align="middle">Laplacian stack (L3)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/self/Lap_Stack_4.jpg" width="220px" />
+            <figcaption align="middle">Laplacian stack (L4)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/self/Lap_Stack_5.jpg" width="220px" />
+            <figcaption align="middle">Laplacian stack (L5)</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+
+<h5>2.4: Multiresolution Blending</h5>
+<p>In this part, the goal is to combine two images with a Gaussian and a Laplacian stack. The algorithm mentioned in the 1983 paper by Burt and Adelson is used. Laplacian stack is applied to two input images and Gaussian stack is applied to the mask image. Finally, sum the results to reconstruct the image. </p>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+			<td align="middle">
+            <img src="part2/blending/apple.jpg" width="300px" />
+            <figcaption align="middle">Apple</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/orange.jpg" width="300px" />
+            <figcaption align="middle">Orange</figcaption>
+            <br>
+
+            <td align="middle">
+            <img src="part2/blending/Blending_orange_apple.jpg" width="300px" />
+            <figcaption align="middle">Result</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+
+<div align="center">
+    <table style="width=100%">
+        <tr>
+            <td align="middle">
+            <img src="part2/blending/left_1.jpg" width="220px" />
+            <figcaption align="middle">Left (L1)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/left_2.jpg" width="220px" />
+            <figcaption align="middle">Left (L2)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/left_3.jpg" width="220px" />
+            <figcaption align="middle">Left (L3)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/left_4.jpg" width="220px" />
+            <figcaption align="middle">Left (L4)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/apple_f_5.jpg" width="220px" />
+            <figcaption align="middle">residual apple</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+<div align="center">
+    <table style="width=100%">
+        <tr>
+            <td align="middle">
+            <img src="part2/blending/right_1.jpg" width="220px" />
+            <figcaption align="middle">Right (L1)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/right_2.jpg" width="220px" />
+            <figcaption align="middle">Right (L2)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/right_3.jpg" width="220px" />
+            <figcaption align="middle">Right (L3)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/right_4.jpg" width="220px" />
+            <figcaption align="middle">Right (L4)</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/orange_f_5.jpg" width="220px" />
+            <figcaption align="middle">residual orange</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+
+<p>I apply it on other images. </p>
+
+<div align="center">
+    <table style="width=100%">
+        <tr>
+            <td align="middle">
+            <img src="part2/blending/spring.jpg" width="350px" />
+            <figcaption align="middle">Spring</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/fall.jpg" width="350px" />
+            <figcaption align="middle">Fall</figcaption>
+            <br>
+
+            <td align="middle">
+            <img src="part2/blending/Blending_fall_spirng.jpg" width="350px" />
+            <figcaption align="middle">Result</figcaption>
+            <br>
+        </tr>
+    </table>
+</div>
+
+<p>Blending images with irregular masks. In the cardon Mulan, mushu is a very popular dragon character. But this character did not appear in the live-action version. So we add it to the poster. </p>
+<div align="center">
+	<table style="width=100%">
+		<tr>
+			<td align="middle">
+            <img src="part2/blending/mulan_Liu.png" width="300px" />
+            <figcaption align="middle">Fire</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/mushu.png" width="300px" />
+            <figcaption align="middle">House</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/mask.jpg" width="300px" />
+            <figcaption align="middle">Mask</figcaption>
+            <br>
+            <td align="middle">
+            <img src="part2/blending/mulan_mushu.jpg" width="300px" />
+            <figcaption align="middle">First_Blend</figcaption>
+            <br>
+
+        </tr>
+    </table>
+</div>
+
+<h4>References</h4>
+<p>[1] Oliva A, Torralba A, Schyns P G. Hybrid images[J]. ACM Transactions on Graphics (TOG), 2006, 25(3): 527-532.</p>
+<p>[2] Burt P J, Adelson E H. A multiresolution spline with application to image mosaics[J]. ACM Transactions on Graphics (TOG), 1983, 2(4): 217-236.</p>
+            
